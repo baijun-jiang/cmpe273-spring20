@@ -22,6 +22,9 @@ def send(id=0, delay=3, message_count=10):
 def get_client_info():
     opts, args = getopt.getopt(sys.argv, None)
     args = args[1:]
+    if len(args) > 3:
+        print("Input Arg Error. Only accept two params: 1. id(str), 2. delay timer(int), 3. number of messages(int)")
+        exit()
     return args
 
 

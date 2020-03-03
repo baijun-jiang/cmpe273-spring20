@@ -1,5 +1,5 @@
 from itertools import islice
-import socket, pickle, time, getopt, sys
+import socket, pickle, time, getopt, sys, datetime
 
 
 UDP_IP = '127.0.0.1'
@@ -107,6 +107,10 @@ def send(id=0, delay=3):
 def get_client_info():
     opts, args = getopt.getopt(sys.argv, None)
     args = args[1:]
+    if len(args) > 2:
+        print("Input Arg Error. Only accept two params: 1. id(str), 2. delay timer(int)")
+        exit()
+    args[0] = f'{args[0]}_{datetime.datetime.now().timestamp()}'
     return args
 
 send(*get_client_info())
