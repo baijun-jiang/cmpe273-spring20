@@ -17,7 +17,7 @@ def stream_input_as_batch(id):
             batch = list(islice(file, 100))
 
             if not batch:
-                yield (None, None, None, None, True)
+                yield (None, None, None, id, True)
                 break
 
             yield (batch, len(batch), batch_no, id, False)

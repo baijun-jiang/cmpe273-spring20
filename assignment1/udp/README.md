@@ -34,3 +34,15 @@ Received ack(xxxxxx) from the server.
 ..
 File upload successfully completed.
 ```
+
+## acknowledge protocol and server file download explained
+
+* udp client uploads file by batches.
+* udp server saves client uploaded file in a folder with {client_id}_{timestamp}_{client_ip}_{client_port}.
+Each batch that udp client uploads are saved as a small chunck(file), and a meta file is used to maintain 
+or describe udp client uploaded file. After udp client file has completed upload, a upload file will also
+being generated within the client upload folder.
+* acknowledge protocol: udp client will send a batch to udp server with a batch id, after udp server has processed
+the batch, the server will send the processed batch no back to udp client. If udp server/client didn't receive any ack
+pacakage, the udp client/server will keep sending the pacakge untill they recieve ack. After exponential back off, the file
+upload will be aborted by the client.

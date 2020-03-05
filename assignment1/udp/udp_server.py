@@ -14,11 +14,15 @@ def write_to_file(data, batch_no, client_id, client_address):
         print("Accepting a file upload...")
         client_dir_mapping.append(dir_path)
 
-    file_path= f'{dir_path}/{batch_no}.txt'
+    file_path= f'{dir_path}/{batch_no}'
+    meta_path = f'{dir_path}/meta'
 
     # detect if client didn't receive ack package but server has processed the request pacakge
     if os.path.isfile(file_path) and os.path.getsize(file_path) > 0:
         return True
+    
+    meta = open(meta_path, 'a+')
+    meta.write(f'{batch_no}\n')
 
     f = open(file_path, 'a+')
     for line in data:
@@ -26,6 +30,17 @@ def write_to_file(data, batch_no, client_id, client_address):
             return False
         f.write(line)
     return True
+
+def file_gen(client_dir_path):
+    meta = f'{client_dir_path}/meta'
+    gen_file_path = f'{client_dir_path}/upload.txt'
+    with open(gen_file_path, 'w') as f:
+        with open(meta, 'r') as meta:
+            for line in meta.readlines():
+                with open(f'{client_dir_path}/{line.rstrip()}', 'r') as chunck:
+                    for line in chunck.readlines():
+                        f.write(line)
+
 
 def package_verify(package):
     if package[4] == True:
@@ -47,8 +62,8 @@ def listen_forever():
         if len(data) is not None:
             data = pickle.loads(data)
             is_valid = package_verify(data)
+            client_id = data[3]
             if is_valid[0]:
-                client_id = data[3]
                 succ = write_to_file(data[0], data[2], data[3], ip)
                 if succ:
                     ack = pickle.dumps({"ack": data[2], "completed": False})
@@ -56,6 +71,8 @@ def listen_forever():
             if is_valid[1]:
                 print("Upload successfully completed.")
                 s.sendto(pickle.dumps({"ack": sys.maxsize, "completed": True}), ip)
+                client_path = f'client_{client_id}_{ip[0]}_{ip[1]}'
+                file_gen(client_path)
 
 
 listen_forever()
