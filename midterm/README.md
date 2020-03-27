@@ -22,7 +22,7 @@ PUT operation allows you to save any Python data type in a remote cache server.
 
 ```python
 { 
-    'hash_code_of_the_object
+    'hash_code_of_the_object'
 }
 ```
 
