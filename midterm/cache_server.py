@@ -2,7 +2,7 @@ import sys
 import socket
 
 from server_config import NODES
-from pickle_hash import deserialize, hash_code_hex
+from pickle_hash import deserialize, hash_code_hex, serialize
 
 BUFFER_SIZE = 1024
 
@@ -35,9 +35,17 @@ class UDPServer():
 
     def handle_operation(self, operation, key, value):
         if operation == 'GET':
-            # TODO: PART I - implement GET retrieval from self.db.xxxxx
-            return 'FIX_ME'.encode()
+            # part 1: if key exist return content, otherwise return cache miss warning
+            key = key.decode()
+            content = self.db.get(key, None)
+
+            if content is None:
+                return 'CACHE_MISS'.encode()
+
+            return serialize(self.db.get(key))
+
         elif operation == 'PUT':
+            print(key)
             return self.db.put(key, value)
         else:
             print(f'Error: Invalid operation={operation}')
