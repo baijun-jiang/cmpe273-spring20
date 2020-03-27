@@ -47,7 +47,6 @@ GET operation allows you to retrieve any existing data stored in the remote cach
 }
 ```
 
-# Part I
 
 The baseline code handles PUT operation and you need to implment GET operation according the above specification.
 
