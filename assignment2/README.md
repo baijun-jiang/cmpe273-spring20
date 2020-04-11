@@ -9,8 +9,107 @@ In the assignment 2, you will be building a scantron OCR application in Python F
 
 All the above features will be handled via a set of REST APIs. The application will persist data into a local SQLite DB.
 
-![](scantron-100.jpg)
-
 # APIs
 
-TBD
+## Create a test
+
+_Request_
+
+> POST http://localhost:5000/api/tests
+
+```json
+{
+    "subject": "Math",
+    "answer_keys": {
+        "1": "A",
+        "2": "B",
+        "3": "C",
+        "..": "..",
+        "49": "D",
+        "50": "E"
+    }
+}
+```
+
+_Response_
+
+```json
+201 Created
+
+{
+    "test_id": 1,
+    "total_questions": 50,
+    "submissions": [] 
+}
+```
+
+
+## Upload a scantron
+
+_Request_
+
+> POST http://localhost:5000/api/tests/1/scantrons
+
+
+```
+# HTTP Request Body
+BINARY_SCANTRON_PDF_FILE_DATA
+```
+
+_Response_
+
+```json
+201 Created
+
+{
+    "scantron_id": 1,
+    "scantron_url": "http://localhost:5000/files/1.pdf",
+    "name": "Foo Bar",
+    "subject": "Math",
+    "total_questions": 50,
+    "score": 40,
+    "result": {
+        "1": {
+            "actual": "A",
+            "expected": "B"
+        },
+        "..": {
+            "actual": "..",
+            "expected": ".."
+        },
+        "50": {
+            "actual": "E",
+            "expected": "E"
+        }
+    }
+}
+```
+
+## Check all scantron submissions
+
+_Request_
+
+> GET http://localhost:5000/api/tests/1
+
+
+_Response_
+
+```json
+{
+    "test_id": 1,
+    "total_questions": 50,
+    "submissions": [
+        {
+            "scantron_id": 1,
+            "name": "Foo Bar",
+            "score": 40
+        }
+    ] 
+}
+```
+
+
+![](scantron-100.jpg)
+
+
+
