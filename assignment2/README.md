@@ -38,7 +38,15 @@ _Response_
 
 {
     "test_id": 1,
-    "total_questions": 50,
+    "subject": "Math",
+    "answer_keys": {
+        "1": "A",
+        "2": "B",
+        "3": "C",
+        "..": "..",
+        "49": "D",
+        "50": "E"
+    },
     "submissions": [] 
 }
 ```
@@ -97,12 +105,37 @@ _Response_
 ```json
 {
     "test_id": 1,
-    "total_questions": 50,
+    "subject": "Math",
+    "answer_keys": {
+        "1": "A",
+        "2": "B",
+        "3": "C",
+        "..": "..",
+        "49": "D",
+        "50": "E"
+    },
     "submissions": [
         {
             "scantron_id": 1,
+            "scantron_url": "http://localhost:5000/files/1.pdf",
             "name": "Foo Bar",
-            "score": 40
+            "subject": "Math",
+            "total_questions": 50,
+            "score": 40,
+            "result": {
+                "1": {
+                    "actual": "A",
+                    "expected": "B"
+                },
+                "..": {
+                    "actual": "..",
+                    "expected": ".."
+                },
+                "50": {
+                    "actual": "E",
+                    "expected": "E"
+                }
+            }
         }
     ] 
 }
