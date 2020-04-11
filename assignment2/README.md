@@ -74,7 +74,6 @@ _Response_
     "scantron_url": "http://localhost:5000/files/1.pdf",
     "name": "Foo Bar",
     "subject": "Math",
-    "total_questions": 50,
     "score": 40,
     "result": {
         "1": {
@@ -120,7 +119,6 @@ _Response_
             "scantron_url": "http://localhost:5000/files/1.pdf",
             "name": "Foo Bar",
             "subject": "Math",
-            "total_questions": 50,
             "score": 40,
             "result": {
                 "1": {
