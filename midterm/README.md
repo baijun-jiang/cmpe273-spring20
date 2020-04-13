@@ -47,7 +47,6 @@ GET operation allows you to retrieve any existing data stored in the remote cach
 }
 ```
 
-# Part I
 
 The baseline code handles PUT operation and you need to implment GET operation according the above specification.
 
@@ -128,3 +127,37 @@ python3 node_ring.py
 {'host': '127.0.0.1', 'port': 4002}
 {'host': '127.0.0.1', 'port': 4000}
 ```
+
+To test your code, you need to run all servers in different terminal windows first before running cache_client.py.
+
+### Step 1: Start all servers
+
+```
+python3 cache_server.py 0
+Cache Server[0] started at 127.0.0.1:4000
+```
+
+```
+python3 cache_server.py 1
+Cache Server[0] started at 127.0.0.1:4001
+```
+
+```
+python3 cache_server.py 2
+Cache Server[0] started at 127.0.0.1:4002
+```
+
+```
+python3 cache_server.py 3
+Cache Server[0] started at 127.0.0.1:4003
+```
+
+### Step 2: Run one client to PUT all users data into all above servers. Data does not need to be equally sharded; however, not all users must not save into a single server like before.
+
+```
+python3 cache_client.py
+```
+
+You should be seeing data gets sharded into multiple servers instead of just 127.0.0.1:4000.
+
+
