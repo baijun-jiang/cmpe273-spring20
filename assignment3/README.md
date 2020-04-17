@@ -56,7 +56,15 @@ Answer the following question:
 
 * What are the best _k_ hashes and _m_ bits values to store one million _n_ keys (E.g. e52f43cd2c23bb2e6296153748382764) suppose we use the same MD5 hash key from [pickle_hash.py](https://github.com/sithu/cmpe273-spring20/blob/master/midterm/pickle_hash.py#L14) and explain why?
 
-
+```python
+@lru_cache(5)
+def get(key):
+    if bloomfilter.is_member(key):
+        return udp_client.get(key)
+    else:
+        return None
+    return ...
+```
 
 
 
