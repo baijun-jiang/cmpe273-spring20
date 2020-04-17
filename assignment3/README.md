@@ -63,7 +63,6 @@ def get(key):
         return udp_client.get(key)
     else:
         return None
-    return ...
 ```
 
 
