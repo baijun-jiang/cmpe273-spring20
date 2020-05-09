@@ -1,16 +1,16 @@
 import sys
 import socket
+import hashlib
+import mmh3
 
 from sample_data import USERS
 from server_config import NODES
 from pickle_hash import serialize_GET, serialize_PUT, serialize_DELETE
-from node_ring import NodeRing
-from lru_cache import lru_cache
-from bloom_filter import BloomFilter
+from rendezvous_hashing_node_ring import NodeRing as R_Node_Ring
+from consistent_hashing_node_ring import NodeRing as C_Node_Ring
 
 BUFFER_SIZE = 1024
 
-bloomfilter = BloomFilter(20, 0.05)
 
 class UDPClient():
     def __init__(self, host, port):
@@ -27,10 +27,27 @@ class UDPClient():
         except socket.error:
             print("Error! {}".format(socket.error))
             exit()
+    
+    # Rendezvous hashing generate hash seed
+    def get_rendezvous_hashed_seed(self):
+        return mmh3.hash(str(self.host) + ':' + str(self.port))
+    
+    # Consistent hashing generated hash seed support with/out replica
+    def get_hash_seed_with_virtual_node(self, replica):
+        if replica != 0:
+            key = (str(self.host) + ':' + str(self.port) + ":" + "replica:" + str(replica)).encode()
+        
+        key = (str(self.host) + ':' + str(self.port)).encode()
+
+        hash_code = hashlib.md5(key)
+        return hash_code.hexdigest()
+
 
 
 def process(udp_clients):
-    client_ring = NodeRing(udp_clients)
+    #client_ring = R_Node_Ring(udp_clients)
+    client_ring = C_Node_Ring(udp_clients)
+
     hash_codes = set()
     # PUT all users.
     for u in USERS:
@@ -50,25 +67,15 @@ def process(udp_clients):
         print(response)
 
 
-@lru_cache(maxsize=5)
 def get(id):
-    if bloomfilter.is_member(id):
-        return serialize_GET(id)
-    return None
+    return serialize_GET(id)
 
-
-@lru_cache(maxsize=5)
 def put(object):
     envelope_bytes, id = serialize_PUT(object)
-    bloomfilter.add(id)
     return envelope_bytes, id
 
-
-@lru_cache(maxsize=5)
 def delete(id):
-    if bloomfilter.is_member(id):
-        return serialize_DELETE(id)
-    return None
+    return serialize_DELETE(id)
 
 if __name__ == "__main__":
     clients = [
