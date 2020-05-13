@@ -109,7 +109,29 @@ def delete(key):
 
 You can validate your implementation using _test_bloom_filter.py_ and should get the expected output as test_bloom_filter_output.txt .
 
+# What are the best k hashes and m bits values to store one million n keys and explain why?
 
+To optimize the bloom filter's k and m, we want to minimizes the p which is the false positive probability, the number of hashes k can be calcualted using this formula:
 
+k = ln(2) * m/n, since we know n is 1,000,000, this function can be further reduce to:
 
+k = ln(2) * m/ 1000000
 
+the fomular for getting the optimized false positive probability p is described as:
+
+p = (1 - e^(-k * n / m))^k which can be further reduced to:
+p = 2 * (-m * log(2) / n)
+
+so the m bits  can be described as m = n * log(1/p) / log^2(2)
+
+assuming we are using the given n = 1,000,000, we can calcualte m to be 
+m = 11035206.2676 * log(1/p)
+
+then we can calculate k to be
+
+k = 7.64902211129 * log(1/p)
+
+So the optimzed k and m will be depending on the false positive probability, and the relationship among k, m and p when storing 1 million keys can be described as 
+
+m = 11035206.2676 * log(1/p)
+k = 7.64902211129 * log(1/p)
